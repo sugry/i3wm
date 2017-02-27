@@ -1,0 +1,720 @@
+;=====================================================
+;
+;   To learn more about how to configure Polybar
+;   go to https://github.com/jaagr/polybar
+;
+;   The README contains alot of information
+;
+;=====================================================
+
+[colors]
+background = #222
+background-alt = #444
+foreground = #dfdfdf
+foreground-alt = #55
+primary = #ffb52a
+secondary = #e60053
+alert = #bd2c40
+
+[global/wm]
+margin-top = 5
+margin-bottom = 5
+
+[bar/example]
+monitor = ${env:MONITOR:LVDS}
+width = 100%
+height = 27
+offset-x = 0
+offset-y = 0
+bottom = true
+
+;background = ${xrdb:color9}
+;background = ${colors.background}
+;--
+;DarkSlateGray
+;background = #2F4F4F
+;grey11
+;background = #1C1C1C
+;as i3-wm
+background = #003344
+;background-2 = #2F4F4F
+foreground = ${colors.foreground}
+
+overline-size = 2
+overline-color = #f00
+underline-size = 2
+underline-color = #00f
+
+;border-bottom-size = 2
+;border-bottom-color = #333
+;border-top-size = 2
+;border-top-color = #333
+
+padding-left = 0
+padding-right = 2
+module-margin-left = 1
+module-margin-right = 2
+
+;font-0 = fixed:pixelsize=9
+font-0 = monospase:pixelsize=10;1
+font-1 = unifont:fontformat=truetype:size=6:heavy
+font-2 = siji:pixelsize=10
+;font-0 = "Tamsyn:pixelsize=12;0"
+;font-1 = "Roboto:size=11:weight=bold;2"
+;font-2 = "Noto Sans:size=11;1"
+;font-3 = FontAwesome:pixelsize=14;
+font-3 = FontAwesome:pixelsize=10;2
+
+; Opacity value between 0.0 and 1.0 used on fade in/out
+dim-value = 0.8
+
+;modules-left = bspwm i3 xwindow
+modules-left = i3 xwindow
+modules-center = 
+;modules-right = backlight pkg xbacklight xkeyboard wlan eth battery temperature date powermenu
+modules-right = weather cpu temperature memory volume date powermenu battery wlan
+
+tray-position = right
+tray-padding = 2
+;tray-transparent = true
+;tray-background = #0063ff
+
+;wm-restack = bspwm
+;wm-restack = i3
+
+;override-redirect = true
+
+;scroll-up = bspwm-desknext
+;scroll-down = bspwm-deskprev
+
+scroll-up = i3wm-wsnext
+scroll-down = i3wm-wsprev
+locale = ru_RU.UTF-8
+
+;-------------------------------------------------------------
+;------------------------module/weather-----------------------
+;-------------------------------------------------------------
+
+[module/weather]
+type = custom/script
+interval = 300
+format = <label>
+format-underline = #9f78e1
+;format-padding = 1
+;label = " %output:0:4% "
+label = " %output% "
+tail = true
+label-background = #285577
+;click-left = 
+;click-right = 
+exec = $HOME/.config/polybar/weather.sh
+exec-if = "ping -q -w 2 -c 1 ya.ru > /dev/null"
+
+;-------------------------------------------------------------
+;----------------------module/backlight-----------------------
+;-------------------------------------------------------------
+;This module shows information about the current monitor backlight setting
+[module/backlight]
+type = internal/backlight
+
+; Use the following command to list available cards:
+; $ ls -1 /sys/class/backlight/
+;card = intel_backlight
+card = acpi_video0
+;Additional formatting
+
+; Available tags:
+;   <label> (default)
+;   <ramp>
+;   <bar>
+format = <ramp><label>
+
+; Available tokens:
+;   %percentage% (default)
+label = %percentage%%
+label-font = 1
+
+; Only applies if <ramp> is used
+ramp-0 = 🌕
+ramp-0-font = 6
+ramp-1 = 🌔
+ramp-1-font = 6
+ramp-2 = 🌓
+ramp-2-font = 6
+ramp-3 = 🌒
+ramp-3-font = 6
+ramp-4 = 🌑
+ramp-4-font = 6
+
+; Only applies if <bar> is used
+bar-width = 10
+bar-indicator = |
+bar-fill = ─
+bar-empty = ─
+
+;-------------------------------------------------------------
+;-------------------------module/pkg--------------------------
+;-------------------------------------------------------------
+
+[module/pkg]
+type = custom/script
+interval = 1200
+format = <label>
+format-underline = #dc322f
+label = "%output:0:30%"
+exec = $HOME/.config/polybar/pkg.sh
+exec-if = "ping -q -w 2 -c 1 176.34.135.167 > /dev/null"
+
+;-------------------------------------------------------------
+;-----------------------module/xwindow------------------------
+;-------------------------------------------------------------
+
+[module/xwindow]
+type = internal/xwindow
+label = %title:0:30:...%
+
+;-------------------------------------------------------------
+;--------------------module/xkeyboard-------------------------
+;-------------------------------------------------------------
+
+[module/xkeyboard]
+type = internal/xkeyboard
+; List of indicators to ignore
+blacklist-0 = num lock
+blacklist-1 = scroll lock
+;
+;Additional formatting
+;
+; Available tags:
+;   <label-layout> (default)
+;   <label-indicator> (default)
+format = <label-layout> <label-indicator>
+format-spacing = 0
+
+; Available tokens:
+;   %layout%
+;   %name%
+;   %number%
+; Default: %layout%
+label-layout = %name%
+label-layout-padding = 2
+label-layout-background = #285577
+label-layout-foreground = #fff
+label-layout-underline = ${colors.secondary}
+;label-layout-overline = ${colors.secondary}
+
+; Available tokens:
+;   %name%
+; Default: %name%
+label-indicator = %name%
+label-indicator-padding = 2
+label-indicator-background = #55ff3399
+
+;-------------------------------------------------------------
+;--------------------module/filesystem------------------------
+;-------------------------------------------------------------
+
+[module/filesystem]
+type = internal/fs
+interval = 25
+
+mount-0 = /
+mount-1 = /home
+mount-2 = /invalid/mountpoint
+
+label-mounted = %mountpoint%: %percentage_free%%
+
+label-unmounted = %mountpoint%: not mounted
+label-unmounted-foreground = ${colors.foreground-alt}
+
+[module/bspwm]
+type = internal/bspwm
+
+label-focused = %index%
+label-focused-background = ${colors.background-alt}
+label-focused-underline= ${colors.primary}
+label-focused-padding = 2
+
+label-occupied = %index%
+label-occupied-padding = 2
+
+label-urgent = %index%!
+label-urgent-background = ${colors.alert}
+label-urgent-padding = 2
+
+label-empty = %index%
+label-empty-foreground = ${colors.foreground-alt}
+label-empty-padding = 2
+
+;-------------------------------------------------------------
+;------------------------module/i3----------------------------
+;-------------------------------------------------------------
+
+[module/i3]
+type = internal/i3
+ws-icon-0 = 1;
+ws-icon-1 = 2;
+ws-icon-2 = 3;
+ws-icon-3 = 4;
+ws-icon-4 = 5;
+ws-icon-default = ♟
+format = <label-state> <label-mode>
+index-sort = true
+wrapping-scroll = false
+fuzzy-match = true
+
+label-mode-padding = 2
+label-mode-foreground = #000
+label-mode-background = ${colors.primary}
+
+label-focused = %index% %icon%
+label-focused-background = ${module/bspwm.label-focused-background}
+label-focused-underline = ${module/bspwm.label-focused-underline}
+label-focused-padding = ${module/bspwm.label-focused-padding}
+
+label-unfocused = %index% %icon%
+label-unfocused-padding = ${module/bspwm.label-occupied-padding}
+
+label-urgent = %index%!! %icon%
+label-urgent-background = ${module/bspwm.label-urgent-background}
+label-urgent-padding = ${module/bspwm.label-urgent-padding}
+
+label-visible = %index% %icon%
+label-visible-background = ${self.label-focused-background}
+label-visible-underline = ${self.label-focused-underline}
+label-visible-padding = ${self.label-focused-padding}
+
+;-------------------------------------------------------------
+;------------------------module/mpd---------------------------
+;-------------------------------------------------------------
+
+[module/mpd]
+type = internal/mpd
+
+format-online = <label-song>  <icon-prev> <icon-seekb> <icon-stop> <toggle> <icon-seekf> <icon-next>  <icon-repeat> <icon-random>
+
+label-song-maxlen = 25
+label-song-ellipsis = true
+
+icon-prev = 
+icon-seekb = 
+icon-stop = 
+icon-play = 
+icon-pause = 
+icon-next = 
+icon-seekf = 
+
+icon-random = 
+icon-repeat = 
+
+toggle-on-foreground = ${colors.primary}
+toggle-off-foreground = #66
+
+[module/xbacklight]
+type = internal/xbacklight
+
+format = <label> <bar>
+label = BL
+
+bar-width = 10
+bar-indicator = │
+bar-indicator-foreground = #ff
+bar-indicator-font = 2
+bar-fill = ─
+bar-fill-font = 2
+bar-fill-foreground = #9f78e1
+bar-empty = ─
+bar-empty-font = 2
+bar-empty-foreground = ${colors.foreground-alt}
+
+[module/backlight-acpi]
+inherit = module/xbacklight
+type = internal/backlight
+card = intel_backlight
+
+[module/cpu]
+;type = internal/cpu
+;interval = 2
+;format-prefix = " "
+;format-prefix-foreground = ${colors.foreground-alt}
+;format-underline = #f90000
+;label = %percentage%%
+;--
+type = internal/cpu
+interval = 1
+format = <label> <ramp-coreload>
+label =  %percentage%%
+
+;ramp-coreload-0 = ▁
+;ramp-coreload-1 = ▂
+;ramp-coreload-2 = ▃
+;ramp-coreload-3 = ▄
+;ramp-coreload-4 = ▅
+;ramp-coreload-5 = ▆
+;ramp-coreload-6 = ▇
+;ramp-coreload-7 = █ 
+
+ramp-coreload-0 = 
+;ramp-coreload-0-font = 2
+;DarkSeaGreen
+ramp-coreload-0-foreground = #8FBC8F
+;
+ramp-coreload-1 = 
+;ramp-coreload-1-font = 2
+;SeaGreen
+ramp-coreload-1-foreground = #2E8B57
+;
+ramp-coreload-2 = 
+;ramp-coreload-2-font = 2
+;OliveDrab
+ramp-coreload-2-foreground = #6B8E23
+;
+ramp-coreload-3 = 
+;ramp-coreload-3-font = 2
+;DarkGoldenrod
+ramp-coreload-3-foreground = #B8860B
+;
+ramp-coreload-4 = 
+;ramp-coreload-4-font = 2
+;Coral
+ramp-coreload-4-foreground = #FF7F50
+;
+ramp-coreload-5 = 
+;ramp-coreload-5-font = 2
+;DarkOrange
+ramp-coreload-5-foreground = #FF8C00
+;
+ramp-coreload-6 = 
+;ramp-coreload-6-font = 2
+;OrangeRed
+ramp-coreload-6-foreground = #FF4500
+;
+ramp-coreload-7 = 
+;ramp-coreload-7-font = 2
+;Red 
+ramp-coreload-7-foreground = #FF0000
+
+;-------------------------------------------------------------
+;----------------------[module/memory]------------------------
+;-------------------------------------------------------------
+
+[module/memory]
+;type = internal/memory
+;interval = 2
+;format-prefix = " "
+;format-prefix-foreground = ${colors.foreground-alt}
+;format-underline = #4bffdc
+;label = %percentage_used%%
+type = internal/memory
+format = <label> <bar-used>
+;label = RAM %gb_used%/%gb_free%
+;label = RAM %percentage_used%%
+label =  %gb_used%
+
+bar-used-width = 10
+bar-used-foreground-0 = #aaff77
+bar-used-foreground-1 = #aaff77
+bar-used-foreground-2 = #fba922
+bar-used-foreground-3 = #ff5555
+bar-used-indicator = 
+bar-used-indicator-font = 6
+bar-used-indicator-foreground = #ff
+bar-used-fill = █
+bar-used-fill-font = 2
+bar-used-empty = █
+bar-used-empty-font = 2
+bar-used-empty-foreground = #8FBC8F
+
+;-------------------------------------------------------------
+;-----------------------[module/wlan]-------------------------
+;-------------------------------------------------------------
+
+[module/wlan]
+type = internal/network
+interface = wlp3s0
+interval = 3.0
+
+;format-connected = <ramp-signal><label-connected>
+format-connected = <label-connected>
+format-connected-underline = #9f78e1
+format-disconnected-underline = ${self.format-connected-underline}
+
+label-connected = %downspeed:9%
+label-disconnected = %ifname% disconnected
+label-disconnected-foreground = ${colors.foreground-alt}
+
+ramp-signal-0 = 
+ramp-signal-1 = 
+ramp-signal-2 = 
+ramp-signal-3 = 
+ramp-signal-4 = 
+ramp-signal-foreground = ${colors.foreground-alt}
+
+;-------------------------------------------------------------
+;------------------------module/eth---------------------------
+;-------------------------------------------------------------
+
+[module/eth]
+type = internal/network
+interface = enp1s0
+interval = 1.0
+
+format-connected-underline = #55aa55
+;format-connected-prefix = ""
+;label-connected-background = #bc99ed
+;label-connected-foreground = #000
+format-connected-foreground-foreground = ${colors.foreground-alt}
+label-connected = %local_ip% %downspeed:9%
+
+format-disconnected-underline = ${self.format-connected-underline}
+label-disconnected = %ifname% 
+
+;-------------------------------------------------------------
+;------------------------module/date--------------------------
+;-------------------------------------------------------------
+
+[module/date]
+type = internal/date
+interval = 1
+format = <label>
+;format-background = #55ff3399
+format-foreground = #fff
+
+date = ""
+date-alt = "  %a., %d %b"
+
+time = %H:%M
+time-alt = %H:%M:%S
+
+;format-prefix = 
+;format-prefix-foreground = ${colors.foreground-alt}
+format-underline = #0a6cf5
+
+label = "%date% %time% "  
+
+;-------------------------------------------------------------
+;-----------------------module/volume-------------------------
+;-------------------------------------------------------------
+
+[module/volume]
+type = internal/volume
+
+format-volume = <label-volume> <bar-volume>
+label-volume = 
+label-volume-foreground = ${root.foreground}
+
+;format-muted-prefix = "  "
+format-muted-foreground = ${colors.foreground-alt}
+label-muted = sound muted
+
+bar-volume-width = 10
+bar-volume-foreground-0 = #55aa55
+bar-volume-foreground-1 = #55aa55
+bar-volume-foreground-2 = #55aa55
+bar-volume-foreground-3 = #55aa55
+bar-volume-foreground-4 = #55aa55
+bar-volume-foreground-5 = #f5a70a
+bar-volume-foreground-6 = #ff5555
+bar-volume-gradient = false
+bar-volume-indicator = │
+bar-volume-indicator-font = 2
+bar-volume-indicator-foreground = #ff
+bar-volume-fill = ─
+bar-volume-fill-font = 2
+bar-volume-empty = ─
+bar-volume-empty-font = 2
+bar-volume-empty-foreground = ${colors.foreground-alt}
+
+;-------------------------------------------------------------
+;---------------------[module/battery]------------------------
+;-------------------------------------------------------------
+
+[module/battery]
+type = internal/battery
+
+; This is useful in case the battery never reports 100% charge
+full-at = 98
+
+; Use the following command to list batteries and adapters:
+; $ ls -1 /sys/class/power_supply/
+battery = BAT0
+adapter = ADP1
+
+; If an inotify event haven't been reported in this many
+; seconds, manually poll for new values.
+;
+; Needed as a fallback for systems that don't report events
+; on sysfs/procfs.
+;
+; Disable polling by setting the interval to 0.
+;
+; Default: 5
+poll-interval = 5
+;Additional formatting
+
+; see "man date" for details on how to format the time string
+; NOTE: if you want to use syntax tags here you need to use %%{...}
+; Default: %H:%M:%S
+time-format = %H:%M
+
+; Available tags:
+;   <label-charging> (default)
+;   <bar-capacity>
+;   <ramp-capacity>
+;   <animation-charging>
+format-charging = <animation-charging> <label-charging>
+format-charging-underline = ${colors.secondary}
+
+; Available tags:
+;   <label-discharging> (default)
+;   <bar-capacity>
+;   <ramp-capacity>
+format-discharging = <ramp-capacity> <label-discharging>
+format-discharging-underline = ${self.format-charging-underline}
+
+; Available tags:
+;   <label-full> (default)
+;   <bar-capacity>
+;   <ramp-capacity>
+format-full = <ramp-capacity> <label-full>
+format-full-underline = #dc322f
+
+; Available tokens:
+;   %percentage% (default)
+;   %time%
+;label-charging = Charging %percentage%%
+label-charging = %percentage%%
+
+; Available tokens:
+;   %percentage% (default)
+;   %time%
+;label-discharging = Discharging %percentage%%
+label-discharging = %percentage%% %time%
+
+; Available tokens:
+;   %percentage% (default)
+;label-full = Fully charged
+label-full = Full
+
+; Only applies if <ramp-capacity> is used
+ramp-capacity-0 = 
+ramp-capacity-1 = 
+ramp-capacity-2 = 
+ramp-capacity-3 = 
+ramp-capacity-4 = 
+
+; Only applies if <bar-capacity> is used
+bar-capacity-width = 10
+
+; Only applies if <animation-charging> is used
+animation-charging-0 = 
+animation-charging-1 = 
+animation-charging-2 = 
+animation-charging-3 = 
+animation-charging-4 = 
+; Framerate in milliseconds
+animation-charging-framerate = 750
+;-------------------------------------------------------------
+;--------------------module/temperature-----------------------
+;-------------------------------------------------------------
+
+[module/temperature]
+;type = internal/temperature
+;thermal-zone = 0
+;warn-temperature = 60
+;
+;format = <ramp> <label>
+;format-underline = #f50a4d
+;format-warn = <ramp> <label-warn>
+;format-warn-underline = ${self.format-underline}
+;
+;label = %temperature%
+;label-warn = %temperature%
+;label-warn-foreground = ${colors.secondary}
+;
+;ramp-0 = 
+;ramp-1 = 
+;ramp-2 = 
+;ramp-foreground = ${colors.foreground-alt}
+
+;-------------------------------------------------------------
+type = internal/temperature
+
+; Seconds to sleep between updates
+; Default: 1
+interval = 2
+
+; Thermal zone to use
+; To list all the zone types, run 
+; $ for i in /sys/class/thermal/thermal_zone*; do echo "$i: $(<$i/type)"; done
+; Default: 0
+thermal-zone = 0
+
+; Threshold temperature to display warning label
+; Default: 80
+warn-temperature = 60
+
+Additional formatting
+
+; Available tags:
+;   <label> (default)
+;   <ramp>
+;format = <ramp> <label>
+format = <label>
+
+; Available tags:
+;   <label-warn> (default)
+;   <ramp>
+format-warn = <ramp> <label-warn>
+
+; Available tokens:
+;   %temperature% (default)
+label =  %temperature%
+
+; Available tokens:
+;   %temperature% (default)
+label-warn =  %temperature%
+label-warn-foreground = #f00
+
+; Requires the <ramp> tag
+; The icon selection will range from 0 to `warn-temperature`
+; with the current temperature as index.
+ramp-0 = 
+ramp-1 = 
+ramp-2 = 
+;ramp-foreground = #55
+ramp-foreground = ${colors.foreground-alt}
+
+;-------------------------------------------------------------
+;----------------------module/powermenu-----------------------
+;-------------------------------------------------------------
+
+[module/powermenu]
+type = custom/menu
+
+format-spacing = 1
+format-underline = ${colors.secondary}
+
+label-open = "   "
+label-open-foreground = ${colors.secondary}
+label-close = cancel
+label-close-foreground = ${colors.secondary}
+label-separator = -
+label-separator-foreground = ${colors.foreground-alt}
+
+menu-0-0 = reboot
+menu-0-0-exec = menu-open-1
+menu-0-1 = power off
+menu-0-1-exec = menu-open-2
+
+menu-1-0 = cancel
+menu-1-0-exec = menu-open-0
+menu-1-1 = reboot
+menu-1-1-exec = sudo reboot
+
+menu-2-0 = power off
+menu-2-0-exec = sudo poweroff
+menu-2-1 = cancel
+menu-2-1-exec = menu-open-0
+
+; vim:ft=dosini

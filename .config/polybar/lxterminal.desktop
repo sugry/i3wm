@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=Pacli
+Comment=Use the command line
+TryExec=lxterminal
+Exec=lxterminal -t pacli -e pacli
+Icon=lxterminal
+Type=Application
+Categories=GTK;System;TerminalEmulator;
+Keywords=console;command line;execute;
+StartupWMClass=Pacli
+Name[ru_RU]=Pacli
