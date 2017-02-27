@@ -1,0 +1,2 @@
+#!/bin/sh
+sudo mount -t cifs //192.168.1.36/Volume_1 /home/s-adm/Volume_1 -o user=s-adm,password=xTs60PpF
